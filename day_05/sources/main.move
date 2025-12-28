@@ -1,49 +1,86 @@
-/// DAY 5: Control Flow & Mark Habit as Done
-/// 
-/// Today you will:
-/// 1. Learn if/else statements
-/// 2. Learn how to access vector elements
-/// 3. Write a function to mark a habit as completed
-
-module challenge::day_05 {
-    use std::vector;
-
-    // Copy from day_04
-    public struct Habit has copy, drop {
+module challenge::day_05
+{
+    public struct Habit has copy, drop
+    {
         name: vector<u8>,
-        completed: bool,
+        completed: bool ,
     }
 
-    public struct HabitList has drop {
-        habits: vector<Habit>,
-    }
-
-    public fun new_habit(name: vector<u8>): Habit {
-        Habit {
+    public fun new_habit(name: vector<u8>) : Habit
+    {
+        Habit
+        {
             name,
             completed: false,
         }
     }
 
-    public fun empty_list(): HabitList {
-        HabitList {
-            habits: vector::empty(),
+    public struct HabitList has drop
+    {
+        habits: vector<Habit>
+    }
+
+    public fun empty_list(): HabitList
+    {
+        HabitList
+        {
+            habits: vector::empty<Habit>()
         }
     }
 
-    public fun add_habit(list: &mut HabitList, habit: Habit) {
+    public fun add_habit(list: &mut HabitList, habit: Habit)
+    {
         vector::push_back(&mut list.habits, habit);
     }
 
-    // TODO: Write a function 'complete_habit' that:
-    // - Takes list: &mut HabitList and index: u64
-    // - Checks if index is valid (less than vector length)
-    // - If valid, marks that habit's completed field as true
-    // Use vector::length() to get the length
-    // Use vector::borrow_mut() to get a mutable reference to an element
-    // public fun complete_habit(list: &mut HabitList, index: u64) {
-    //     // Your code here
-    //     // Hint: if (index < length) { ... }
-    // }
-}
+    public fun complete_habit(list: &mut HabitList, index: u64)
+    {
+        let length = vector::length(&list.habits);
 
+        if (index < length)
+        {
+            let habit = vector::borrow_mut(&mut list.habits, index);
+
+            habit.completed = true;
+        }
+    }
+
+    #[test]
+    fun test_empty_list()
+    {
+        let list = empty_list();
+
+        assert!(vector::length(&list.habits) == 0, 0);
+    }
+
+    #[test]
+    fun test_add_habit()
+    {
+        let mut list = empty_list();
+
+        let habit1 = new_habit(b"habit1");
+        let habit2 = new_habit(b"habit2");
+        
+        add_habit(&mut list, habit1);
+        add_habit(&mut list, habit2);
+
+        assert!(vector::length(&list.habits) == 2, 0);
+    }
+
+    #[test]
+    fun test_complete_habit()
+    {
+        let mut list = empty_list();
+
+        add_habit(&mut list, new_habit(b"habit1"));
+        add_habit(&mut list, new_habit(b"habit2"));
+
+        complete_habit(&mut list, 0);
+
+        let f_habit = vector::borrow(&list.habits, 0);
+        let s_habit = vector::borrow(&list.habits, 1);
+
+        assert!(f_habit.completed == true , 0);
+        assert!(s_habit.completed == false, 1);
+    }
+}

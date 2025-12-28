@@ -4,7 +4,6 @@
 /// Students should complete main.move, not this file.
 
 module challenge::day_05_solution {
-    use std::vector;
 
     // Copy from day_04
     public struct Habit has copy, drop {
