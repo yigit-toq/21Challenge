@@ -4,7 +4,6 @@
 /// Students should complete main.move, not this file.
 
 module challenge::day_06_solution {
-    use std::vector;
     use std::string::{Self, String};
 
     // Habit struct using String instead of vector<u8>
