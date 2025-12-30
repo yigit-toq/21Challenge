@@ -4,7 +4,6 @@
 /// Students should complete main.move, not this file.
 
 module challenge::day_07_solution {
-    use std::vector;
     use std::string::{Self, String};
 
     // Copy final code from day_06
