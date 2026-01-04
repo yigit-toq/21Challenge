@@ -4,7 +4,6 @@
 /// Students should complete main.move, not this file.
 
 module challenge::day_11_solution {
-    use std::vector;
     use std::string::String;
 
     // Copy Task and TaskStatus from previous days

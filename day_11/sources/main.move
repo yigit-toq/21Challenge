@@ -1,62 +1,67 @@
-/// DAY 11: TaskBoard & Address Type
-/// 
-/// Today you will:
-/// 1. Learn about the address type
-/// 2. Create a TaskBoard that tracks ownership
-/// 3. Understand ownership in practice
-///
-/// Note: You can copy code from day_10/sources/solution.move if needed
-/// 
-/// Related: Day 10 (Visibility), Day 12 (Building on TaskBoard)
-
-module challenge::day_11 {
-    use std::vector;
+module challenge::day_11
+{
     use std::string::String;
 
-    // Copy from day_10: TaskStatus enum and Task struct
-    public enum TaskStatus has copy, drop {
-        Open,
-        Completed,
+    public enum TaskStatus has copy, drop
+    {
+        Open        ,
+        Completed   ,
     }
 
-    public struct Task has copy, drop {
-        title: String,
-        reward: u64,
-        status: TaskStatus,
+    public struct Task has copy, drop
+    {
+        title   : String    ,
+        reward  : u64       ,
+        status  : TaskStatus,
     }
 
-    public fun new_task(title: String, reward: u64): Task {
-        Task {
-            title,
-            reward,
-            status: TaskStatus::Open,
+    public fun new_task(title: String, reward: u64): Task
+    {
+        Task
+        {
+            title  : title              ,
+            reward : reward             ,
+            status : TaskStatus::Open   ,
         }
     }
 
-    public fun complete_task(task: &mut Task) {
+    public struct TaskBoard has drop
+    {
+        owner: address      ,
+        tasks: vector<Task> ,
+    }
+
+    public fun new_board(owner: address): TaskBoard
+    {
+        TaskBoard
+        {
+            owner: owner                ,
+            tasks: vector::empty<Task>(),
+        }
+    }
+
+    public fun add_task(board: &mut TaskBoard, task: Task)
+    {
+        vector::push_back(&mut board.tasks, task);
+    }
+
+    public fun is_open(task: &Task): bool
+    {
+        task.status == TaskStatus::Open
+    }
+
+    public fun complete_task(task: &mut Task)
+    {
         task.status = TaskStatus::Completed;
     }
 
-    // TODO: Define a struct called 'TaskBoard' with:
-    // - owner: address (the address that owns this board)
-    // - tasks: vector<Task>
-    // Add 'drop' ability
-    // public struct TaskBoard has drop {
-    //     // Your fields here
-    // }
+    public fun has_valid_reward(task: &Task): bool
+    {
+        internal_helper(task.reward)
+    }
 
-    // TODO: Write a constructor 'new_board' that takes owner: address
-    // and returns an empty TaskBoard
-    // public fun new_board(owner: address): TaskBoard {
-    //     // Your code here
-    // }
-
-    // TODO: Write a function 'add_task' that:
-    // - Takes board: &mut TaskBoard and task: Task
-    // - Adds the task to the board's vector
-    // The task becomes part of the board's data
-    // public fun add_task(board: &mut TaskBoard, task: Task) {
-    //     // Your code here
-    // }
+    fun internal_helper(reward: u64): bool
+    {
+        reward > 0
+    }
 }
-
